@@ -30,7 +30,8 @@ class Game():
             player.x_vel = max_xvel
         elif player.x_vel < -max_xvel:
             player.x_vel = -max_xvel
-        elif player.y_vel > max_yvel:
+
+        if player.y_vel > max_yvel:
             player.y_vel = max_yvel
         elif player.y_vel < -max_yvel:
             player.y_vel = -max_yvel
@@ -38,12 +39,12 @@ class Game():
 
     def collisions(self, player):
         # Ground
-        if player.rect.bottom >= SCREEN_HEIGHT:
-            player.y_vel = 0
-            player.rect.y = SCREEN_HEIGHT - 100
-            player.collision = True
-        else:
-            player.collision = False
+        #if player.rect.bottom >= SCREEN_HEIGHT:
+        #    player.y_vel = 0
+        #    player.rect.y = SCREEN_HEIGHT - 100
+        #    player.collision = True
+        #else:
+        #    player.collision = False
 
         # Platform
         for platform in self.platforms:
@@ -52,6 +53,8 @@ class Game():
                 player.rect.y = platform.top - 100
                 player.collision = True
                 break
+            else:
+                player.collision = False
 
 
 class Player():
@@ -81,6 +84,13 @@ class Player():
         else:
             self.platform_coll = True
 
+    def hit(self, pressed_keys, target):
+        if pressed_keys[self.ctrls["hit"]] and player.rect.colliderect(target.rect):
+            if player.rect.x < target.rect.x:
+                target.x_vel = 18
+            elif player.rect.x > target.rect.x:
+                target.x_vel = -18
+
 
 # Game variables
 SCREEN_WIDTH = 1200
@@ -89,7 +99,7 @@ PLAYER_WIDTH = 40
 PLAYER_HEIGHT = 100
 gravity = 0.4
 friction = 0.3
-max_xvel = 10
+max_xvel = 18
 max_yvel = 14
 
 pygame.init()
@@ -113,8 +123,8 @@ bottom_platform = pygame.image.load("Assets/basic_bottom_platform.png").convert_
 game = Game()
 
 # Create Players
-player1 = Player(1100, 100, blue_player, settings.controls["wasd"])
-player2 = Player(100, 100, red_player, settings.controls["arrows"])
+player1 = Player(1000, 100, blue_player, settings.controls["wasd"])
+player2 = Player(200, 100, red_player, settings.controls["arrows"])
 players = [player1, player2]
 
 while True:
@@ -134,8 +144,16 @@ while True:
     screen.blit(bottom_platform, game.platforms[4])
 
     # Players
+    pressed_keys = pygame.key.get_pressed()
+
     for player in players:
-        player.move(pygame.key.get_pressed())
+        if player == player1:
+            other_player = players[1]
+        else:
+            other_player = players[0]
+
+        player.move(pressed_keys)
+        player.hit(pressed_keys, other_player)
         game.forces(player)
         player.update()
 
