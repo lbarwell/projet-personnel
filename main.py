@@ -106,18 +106,6 @@ top_platform = pygame.image.load("Assets/basic_top_platform.png").convert_alpha(
 mid_platform = pygame.image.load("Assets/basic_mid_platform.png").convert_alpha()
 bottom_platform = pygame.image.load("Assets/basic_bottom_platform.png").convert_alpha()
 
-contact_0 = pygame.image.load("Assets/contact_0.png").convert_alpha()
-contact_0 = pygame.transform.scale(contact_0, (100, 100))
-
-contact_1 = pygame.image.load("Assets/contact_1.png").convert_alpha()
-contact_1 = pygame.transform.scale(contact_1, (100, 100))
-
-contact_2 = pygame.image.load("Assets/contact_2.png").convert_alpha()
-contact_2 = pygame.transform.scale(contact_2, (100, 100))
-
-contact_3 = pygame.image.load("Assets/contact_3.png").convert_alpha()
-contact_3 = pygame.transform.scale(contact_3, (100, 100))
-
 # Create game
 game = Game()
 
