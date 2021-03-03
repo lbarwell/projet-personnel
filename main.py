@@ -38,19 +38,17 @@ class Game():
 
 
     def collisions(self, player):
-        # Ground
-        #if player.rect.bottom >= SCREEN_HEIGHT:
-        #    player.y_vel = 0
-        #    player.rect.y = SCREEN_HEIGHT - 100
-        #    player.collision = True
-        #else:
-        #    player.collision = False
+        #  Ground
+        if player.rect.y > SCREEN_HEIGHT + 1000:
+            player.rect.topleft = player.starting_pos
+            player.x_vel = 0
+            player.y_vel = 0
 
         # Platform
         for platform in self.platforms:
-            if player.rect.colliderect(platform) and player.y_vel >= 0 and player.rect.y < platform.top - 80 and player.platform_coll:
+            if player.rect.colliderect(platform) and player.y_vel >= 0 and player.rect.y < platform.top - PLAYER_HEIGHT + 20 and player.platform_coll:
                 player.y_vel = 0
-                player.rect.y = platform.top - 100
+                player.rect.y = platform.top - PLAYER_HEIGHT
                 player.collision = True
                 break
             else:
@@ -58,15 +56,25 @@ class Game():
 
 
 class Player():
-    def __init__(self, x, y, player_image, ctrls):
+    def __init__(self, starting_pos, colour, ctrls, player_image):
         self.x_vel = 0
         self.y_vel = 0
+        self.starting_pos = starting_pos
+        self.strength = 12
+        self.colour = colour
         self.ctrls = ctrls
         self.surf = player_image
-        self.rect = self.surf.get_rect(topleft = (x, y))
+        self.rect = self.surf.get_rect(topleft = starting_pos)
 
 
     def update(self):
+        # Direction
+        if self.x_vel > 0:
+            self.surf = player_images[self.colour]["standing"]
+        elif self.x_vel < 0:
+            self.surf = pygame.transform.flip(player_images[self.colour]["standing"], True, False)
+
+        # Position
         self.rect.centerx += self.x_vel
         self.rect.centery += self.y_vel
 
@@ -87,16 +95,16 @@ class Player():
     def hit(self, pressed_keys, target):
         if pressed_keys[self.ctrls["hit"]] and player.rect.colliderect(target.rect):
             if player.rect.x < target.rect.x:
-                target.x_vel = 18
+                target.x_vel = self.strength
             elif player.rect.x > target.rect.x:
-                target.x_vel = -18
+                target.x_vel = -self.strength
 
 
 # Game variables
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
-PLAYER_WIDTH = 40
-PLAYER_HEIGHT = 100
+PLAYER_WIDTH = 48
+PLAYER_HEIGHT = 138
 gravity = 0.4
 friction = 0.3
 max_xvel = 18
@@ -119,12 +127,22 @@ top_platform = pygame.image.load("Assets/basic_top_platform.png").convert_alpha(
 mid_platform = pygame.image.load("Assets/basic_mid_platform.png").convert_alpha()
 bottom_platform = pygame.image.load("Assets/basic_bottom_platform.png").convert_alpha()
 
+player_images = {
+    "red": {
+        "standing": red_player
+    },
+
+    "blue": {
+        "standing": blue_player
+    }
+}
+
 # Create game
 game = Game()
 
 # Create Players
-player1 = Player(1000, 100, blue_player, settings.controls["wasd"])
-player2 = Player(200, 100, red_player, settings.controls["arrows"])
+player1 = Player((1000, 100), "blue", settings.controls["wasd"], blue_player)
+player2 = Player((200, 100), "red", settings.controls["arrows"], red_player)
 players = [player1, player2]
 
 while True:
@@ -134,7 +152,7 @@ while True:
             sys.exit()
 
     # Background
-    screen.fill((0, 0, 0))
+    screen.fill((255, 255, 255))
 
     # Platforms
     screen.blit(top_platform, game.platforms[0])
