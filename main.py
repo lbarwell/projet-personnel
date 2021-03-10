@@ -70,9 +70,9 @@ class Player():
     def update(self):
         # Direction
         if self.x_vel > 0:
-            self.surf = player_images[self.colour]["standing"]
+            self.surf = player_images[self.colour]
         elif self.x_vel < 0:
-            self.surf = pygame.transform.flip(player_images[self.colour]["standing"], True, False)
+            self.surf = pygame.transform.flip(player_images[self.colour], True, False)
 
         # Position
         self.rect.centerx += self.x_vel
@@ -117,24 +117,19 @@ pygame.display.set_caption("Projet Personnel")
 clock = pygame.time.Clock()
 
 # Load images
-red_player = pygame.image.load("Assets/basic_red_player.png").convert_alpha()
+red_player = pygame.image.load("Assets/red_player.png").convert_alpha()
 red_player = pygame.transform.scale(red_player, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
-blue_player = pygame.image.load("Assets/basic_blue_player.png").convert_alpha()
+blue_player = pygame.image.load("Assets/blue_player.png").convert_alpha()
 blue_player = pygame.transform.scale(blue_player, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
-top_platform = pygame.image.load("Assets/basic_top_platform.png").convert_alpha()
-mid_platform = pygame.image.load("Assets/basic_mid_platform.png").convert_alpha()
-bottom_platform = pygame.image.load("Assets/basic_bottom_platform.png").convert_alpha()
+top_platform = pygame.image.load("Assets/top_platform.png").convert_alpha()
+mid_platform = pygame.image.load("Assets/mid_platform.png").convert_alpha()
+bottom_platform = pygame.image.load("Assets/bottom_platform.png").convert_alpha()
 
 player_images = {
-    "red": {
-        "standing": red_player
-    },
-
-    "blue": {
-        "standing": blue_player
-    }
+    "red": red_player,
+    "blue": blue_player
 }
 
 # Create game
@@ -152,7 +147,7 @@ while True:
             sys.exit()
 
     # Background
-    screen.fill((255, 255, 255))
+    screen.fill((0, 0, 0))
 
     # Platforms
     screen.blit(top_platform, game.platforms[0])
